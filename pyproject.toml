@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentflow"
+version = "0.1.0"
+description = "Zero-dependency static security analyzer for LangChain, CrewAI, AutoGen, and LangGraph agent code"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Kris Kimmerle", email = "kris@kimmerle.com"}
+]
+requires-python = ">=3.9"
+keywords = [
+    "security",
+    "agents",
+    "langchain",
+    "crewai",
+    "autogen",
+    "langgraph",
+    "owasp",
+    "static-analysis"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Testing",
+]
+
+[project.urls]
+Homepage = "https://github.com/kriskimmerle/agentflow"
+Repository = "https://github.com/kriskimmerle/agentflow"
+Issues = "https://github.com/kriskimmerle/agentflow/issues"
+
+[project.scripts]
+agentflow = "agentflow:main"
+
+[tool.setuptools]
+py-modules = ["agentflow"]

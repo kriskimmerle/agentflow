@@ -1,0 +1,82 @@
+name: 'agentflow Security Scan'
+description: 'Scan LangChain/CrewAI/AutoGen/LangGraph agent code for security antipatterns (OWASP Agentic Top 10)'
+author: 'Kris Kimmerle'
+
+branding:
+  icon: 'shield'
+  color: 'purple'
+
+inputs:
+  path:
+    description: 'Path to scan (file or directory)'
+    required: false
+    default: '.'
+  
+  format:
+    description: 'Output format (text or json)'
+    required: false
+    default: 'text'
+  
+  check:
+    description: 'Fail if score below min-score'
+    required: false
+    default: 'true'
+  
+  min-score:
+    description: 'Minimum security score (0-100)'
+    required: false
+    default: '70'
+  
+  ignore:
+    description: 'Comma-separated list of rules to ignore (e.g., AF10,AF12)'
+    required: false
+    default: ''
+  
+  exclude:
+    description: 'Comma-separated list of paths to exclude'
+    required: false
+    default: ''
+  
+  python-version:
+    description: 'Python version to use'
+    required: false
+    default: '3.11'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+    
+    - name: Install agentflow
+      shell: bash
+      run: |
+        pip install agentflow
+    
+    - name: Run agentflow scan
+      shell: bash
+      run: |
+        args=("${{ inputs.path }}")
+        
+        if [ "${{ inputs.format }}" = "json" ]; then
+          args+=("--json")
+        fi
+        
+        if [ "${{ inputs.check }}" = "true" ]; then
+          args+=("--check" "--min-score" "${{ inputs.min-score }}")
+        fi
+        
+        if [ -n "${{ inputs.ignore }}" ]; then
+          args+=("--ignore" "${{ inputs.ignore }}")
+        fi
+        
+        # Handle exclude paths (find and exclude matching files)
+        if [ -n "${{ inputs.exclude }}" ]; then
+          IFS=',' read -ra PATHS <<< "${{ inputs.exclude }}"
+          echo "Note: Exclude patterns: ${PATHS[*]}"
+          echo "agentflow scans only Python files; use --ignore to skip specific rules"
+        fi
+        
+        agentflow "${args[@]}"
